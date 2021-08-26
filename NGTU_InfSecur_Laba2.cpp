@@ -2,12 +2,16 @@
 #include <stdlib.h>
 #include <string>
 #include <Windows.h>
+#include "DesEncrypt.h"
 
 using namespace std;
 
 bool AddConsoleTextColor(const string Text, const int Color = 7);//Цвета: 7 - белый(стандартный), 10 - зеленый, 12 - красный, 14 - желтый, 224 - черный на желтом фоне
 int ReadConsoleNum(const string Text = "", const int Color = 7);
 
+//функция преобразования в массив битов
+//функция преобразования из массива битов в текст
+//функции интерефейса для шифрования
 
 int main()
 {
