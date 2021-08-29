@@ -12,7 +12,7 @@ bitset<8> *InitialPermutation(bitset<8> * BitsetArray, const int ArraySize);	//ф
 
 
 
-bitset<8> *DesEncrypt();								//функция преобразования Фейстеля
+bitset<8> *DesEncrypt();								//функция шифрования
 bitset<8> *BitsetXor(bitset<8> *LBitset, bitset<8> *FBitset, int BisetArraySize = 4);	//функция битового сложения блоков по 32 бита по модулю 2
 bitset<8> *Feistel(bitset<8> *RBitset, bitset<8> *NKey);		//Основная функция шифрования (функция Фейстеля)
 		/*
@@ -30,7 +30,5 @@ bool KeyGetCD(bitset<8> *Kp, bitset<8> *Ci, bitset<8> *Di);			//формирование бло
 bitset<8> *CyclicShift(bitset<8> Bitset, int BitsetSize, int ShiftNumber);//функция циклических сдвигов влево
 bitset<8> *FinalPermutation8(bitset<8> * const FittedBitsetArray8);		//функция конечной перестановки для 64 бит
 bitset<8> *FinalPermutation(bitset<8> * BitsetArray, const int ArraySize);	//функция конечной перестановки для всех блоков
-
-//основная функция шифрования
 
 
