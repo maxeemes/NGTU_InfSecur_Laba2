@@ -28,7 +28,7 @@ bitset<8>* FitArray(bitset<8>* BitsetArray, int * ArraySize)
 	return NewBitsetArray;
 }
 
-bitset<8>* InitialPermutaion8(bitset<8>* const FittedBitsetArray8)
+bitset<8>* InitialPermutation8(bitset<8>* const FittedBitsetArray8)
 {
 	bitset<8> * InitialPermutaion8Res = new bitset<8>[8];//масив для результата
 	for (int ByteNum = 0; ByteNum < 8; ByteNum++)//цикл перестановки
@@ -45,6 +45,34 @@ bitset<8>* InitialPermutaion8(bitset<8>* const FittedBitsetArray8)
 	}
 
 	return InitialPermutaion8Res;
+}
+
+bitset<8>* InitialPermutation(bitset<8>* BitsetArray, const int ArraySize)
+{
+	if (ArraySize > 0 && ArraySize % 8 != 0) return nullptr;
+	bitset<8>* PermutatedBitsetArray = new bitset<8>[ArraySize];
+	bitset<8>* TempBitsetArray;
+
+	for (int i = 0; i < ArraySize; i += 8)									//цикл блочного шифрования по 8 байт
+	{
+		TempBitsetArray = InitialPermutation8(&BitsetArray[i]);				//проверить работоспособность
+		for (int ByteNum = 0; ByteNum < 8; ByteNum++)
+		{
+			PermutatedBitsetArray[i + ByteNum] = TempBitsetArray[ByteNum];
+		}
+	}
+
+	return PermutatedBitsetArray;
+}
+
+bitset<8>* BitsetXor(bitset<8>* LBitset, bitset<8>* FBitset, int BisetArraySize = 4)
+{
+	bitset <8> *ResBitset = new bitset<8>[BisetArraySize];
+	for (int i = 0; i < BisetArraySize; i++)
+	{
+		ResBitset[i] = LBitset[i] ^ FBitset[i];
+	}
+	return ResBitset;
 }
 
 

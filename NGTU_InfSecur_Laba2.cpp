@@ -42,7 +42,7 @@ int main()
 	}
 	cout << Bitset8ArrayToString(testBitset, NewSize) << endl;
 
-	bitset<8> * Permuted = InitialPermutaion8(testBitset);
+	bitset<8> * Permuted = InitialPermutation8(testBitset);
 	for (int i = 0; i < NewSize; i++)
 	{
 		cout << Permuted[i] << endl;
