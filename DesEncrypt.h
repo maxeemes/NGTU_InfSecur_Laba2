@@ -19,7 +19,7 @@ bitset<8> *Feistel(bitset<8> *RBitset, bitset<8> *NKey);		//Основная функция шиф
 			Аргументами функции f являются 32-битовый вектор R_{i-1} и 48-битовый ключ k_i, 
 			который является результатом преобразования 56-битового исходного ключа шифра k. 
 		*/
-bitset<8> *ExtensionE(bitset<8> *RBitset);							//функция расширения E, расширяет вектор R до 48-битового вектора E(R)
+bitset<8> *ExtensionE(bitset<8> *RBitset);							//функция расширения 32-битового E, расширяет вектор R до 48-битового вектора E(R)
 //BitsetXor(*ExtensionE(bitset<8> *RBitset), k_i)					//сложение по модулю 2 с ключом k_i
 bitset<8> *TransormationS(bitset<8> *EkBitset);						//преобразование S, состоящее из 8 преобразований S -блоков S_1, S_2, S_3... S_8,
 bitset<8> *Permutation(bitset<8> *SBitset);							//перестановка  P.
