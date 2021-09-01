@@ -21,7 +21,7 @@ bitset<8> *Feistel(bitset<8> *RBitset, bitset<8> *NKey);		//Основная функция шиф
 		*/
 bitset<8> *ExtensionE(bitset<8> *RBitset);							//функция расширения 32-битового E, расширяет вектор R до 48-битового вектора E(R)
 //BitsetXor(*ExtensionE(bitset<8> *RBitset), k_i)					//сложение по модулю 2 с ключом k_i
-bitset<8> *TransormationS(bitset<8> *EkBitset);						//преобразование S, состоящее из 8 преобразований S -блоков S_1, S_2, S_3... S_8,
+bitset<4> *TransormationS(bitset<6> *EkBitset);						//преобразование S, состоящее из 8 преобразований S -блоков S_1, S_2, S_3... S_8,
 bitset<8> *Permutation(bitset<8> *SBitset);							//перестановка  P.
 
 bitset<8> *KeysGenerationK(bitset<8> *K);						//Генерирование ключей k_i, входные данные битовый ключ из 7 байт

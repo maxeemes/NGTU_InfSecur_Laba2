@@ -1,5 +1,6 @@
 #include "DesEncrypt.h"
 
+//таблица начальной перестановки
 int InitialPermutaionTable[] = {
 	58, 50, 42, 34, 26, 18, 10, 2,	 60, 52, 44, 36, 28, 20, 12, 4,
 	62, 54, 46, 38, 30, 22, 14, 6,	 64, 56, 48, 40, 32, 24, 16, 8,
@@ -7,6 +8,7 @@ int InitialPermutaionTable[] = {
 	61, 53, 45, 37, 29, 21, 13, 5,	 63, 55, 47, 39, 31, 23, 15, 7
 };
 
+//таблица расширения E
 int ExtensionETable[] = {
 	32,	1,	2,	3,	4,	5,
 	4,	5,	6,	7,	8,	9,
@@ -18,6 +20,7 @@ int ExtensionETable[] = {
 	28,	29,	30,	31,	32,	1
 };
 
+//таблица преобразований S
 int TransormationSTable[32][16] = {
 	{14,	4,	13,	1,	2,	15,	11,	8,	3,	10,	6,	12,	5,	9,	0,	7},		//
 	{0,		15,	7,	4,	14,	2,	13,	1,	10,	6,	12,	11,	9,	5,	3,	8},		//S_1
@@ -60,6 +63,13 @@ int TransormationSTable[32][16] = {
 	{2,		1,	14,	7,	4,	10,	8,	13,	15,	12,	9,	0,	3,	5,	6,	11}		//
 };
 
+int PermutaionTable[4][8] = {
+	{16,	7,	20,	21,	29,	12,	28,	17},
+	{1,		15,	23,	26,	5,	18,	31,	10},
+	{2,		8,	24,	14,	32,	27,	3,	9},
+	{19,	13,	30,	6,	22,	11,	4,	25}
+};
+
 bitset<8>* FitArray(bitset<8>* BitsetArray, int * ArraySize)
 {
 	if(*ArraySize <= 0) return nullptr;
@@ -83,8 +93,8 @@ bitset<8>* FitArray(bitset<8>* BitsetArray, int * ArraySize)
 
 bitset<8>* InitialPermutation8(bitset<8>* const FittedBitsetArray8)
 {
-	bitset<8> * InitialPermutaion8Res = new bitset<8>[8];//масив для результата
-	for (int ByteNum = 0; ByteNum < 8; ByteNum++)//цикл перестановки
+	bitset<8> * InitialPermutaion8Res = new bitset<8>[8];	//масив для результата
+	for (int ByteNum = 0; ByteNum < 8; ByteNum++)			//цикл перестановки
 	{
 		string NewByte;
 		for (int BitNum = 0; BitNum < 8; BitNum++)
@@ -106,9 +116,9 @@ bitset<8>* InitialPermutation(bitset<8>* BitsetArray, const int ArraySize)
 	bitset<8>* PermutatedBitsetArray = new bitset<8>[ArraySize];
 	bitset<8>* TempBitsetArray;
 
-	for (int i = 0; i < ArraySize; i += 8)									//цикл блочного шифрования по 8 байт
+	for (int i = 0; i < ArraySize; i += 8)						//цикл блочного шифрования по 8 байт
 	{
-		TempBitsetArray = InitialPermutation8(&BitsetArray[i]);				//проверить работоспособность
+		TempBitsetArray = InitialPermutation8(&BitsetArray[i]);	//проверить работоспособность
 		for (int ByteNum = 0; ByteNum < 8; ByteNum++)
 		{
 			PermutatedBitsetArray[i + ByteNum] = TempBitsetArray[ByteNum];
@@ -134,7 +144,7 @@ bitset<8>* ExtensionE(bitset<8>* RBitset)
 	for (int ByteNum = 0; ByteNum < 6; ByteNum++)
 	{
 		string NewByte;
-		for (int BitNum = 0; BitNum < 8; BitNum++)
+		for (int BitNum = 0; BitNum < 8; BitNum++)	//цикл создания новго байта после перестановки E
 		{
 			int FullBitNum = ByteNum * 8 + BitNum;
 			int NewBitNum = ExtensionETable[FullBitNum] - 1;
@@ -144,5 +154,37 @@ bitset<8>* ExtensionE(bitset<8>* RBitset)
 		ExtendedBitset[ByteNum] = bitset<8>(NewByte);
 	}
 	return ExtendedBitset;
+}
+
+bitset<4>* TransormationS(bitset<6>* EkBitset)
+{
+	bitset<4> *TransoformatedS = new bitset<4>[8];
+	for (int SNum = 0, EkBitsetNum = 0; SNum < 32 && EkBitsetNum < 8; SNum += 4, EkBitsetNum++)
+	{
+		bitset<2> A;						//строка позции в таблице преобразований S
+		A[0] = EkBitset[EkBitsetNum][0];
+		A[1] = EkBitset[EkBitsetNum][5];
+		bitset<4> B;						//столбец в таблице преобразований S
+		for (int BitSetInd = 1, BInd = 0; BitSetInd <= 4 && BInd < 4; BitSetInd++, BInd++)//цикл вставки значения
+		{
+			B[BInd] = EkBitset[EkBitsetNum][BitSetInd];
+		}
+		TransoformatedS[EkBitsetNum] = TransormationSTable[SNum + A.to_ulong()][B.to_ulong()];//вставка преобразованного значения
+	}
+	return TransoformatedS;
+}
+
+bitset<8>* Permutation(bitset<8>* SBitset)
+{
+	bitset<8> *PemutatedVal = new bitset<8>[4];										//переменная для значения после перестановки
+	for (int ByteInd = 0; ByteInd < 4; ByteInd++)									//цикл перестановки байтов
+	{
+		for (int BitInd = 0; BitInd < 8; BitInd++)									//цикл перестановки битов
+		{
+			int NewBitPos = PermutaionTable[ByteInd][BitInd];						//получение новой позиции бита
+			PemutatedVal[ByteInd][BitInd] = SBitset[NewBitPos / 8][NewBitPos % 8];	//установка бита на новую позицию
+		}
+	}
+	return PemutatedVal;
 }
 
