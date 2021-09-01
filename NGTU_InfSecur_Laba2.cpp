@@ -48,7 +48,7 @@ int main()
 	{
 		cout << i << ")\t" << Permuted[i] << endl;
 	}
-	rotate(&Permuted[0], &Permuted[0] - 1, &Permuted[8]);
+	rotate(&Permuted[0], &Permuted[0] + 1, &Permuted[8]);
 	cout << "после" << endl;
 	for (int i = 0; i < NewSize; i++)
 	{

@@ -229,10 +229,14 @@ bool KeyGetCD(bitset<8>* Kp, bitset<1>* Ci, bitset<1>* Di)
 	return true;
 }
 
-bitset<1>* CyclicShift(bitset<1> Bitset, const int ShiftNumber, const int BitsetSize)
+bitset<1>* LeftCyclicShift(bitset<1> *Bitset, const size_t ShiftNumber, const int BitsetSize)
 {
-	//bitset<1> *ShiftedBitset
-	//for()
-	return nullptr;
+	bitset<1> *ShiftedBitset = new bitset<1>[BitsetSize];
+	for (int BitInd = 0; BitInd < BitsetSize; BitInd++)
+	{
+		ShiftedBitset[BitInd] = Bitset[BitInd];
+	}
+	rotate(&ShiftedBitset[0], &ShiftedBitset[0] + ShiftNumber, &ShiftedBitset[BitsetSize]);
+	return ShiftedBitset;
 }
 

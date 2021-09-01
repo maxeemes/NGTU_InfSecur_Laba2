@@ -27,7 +27,7 @@ bitset<8> *Permutation(bitset<8> *SBitset);							//перестановка  P.
 bitset<8> *KeysGenerationK(bitset<8> *K);									//Генерирование ключей k_i, входные данные битовый ключ из 7 байт
 bitset<8> *KeyAddParityBits(bitset<8> *K);										//добавление к 56 битовому ключу битов таким образом, чтобы каждый байт содержал нечетное число единиц.
 bool KeyGetCD(bitset<8> *Kp, bitset<1> *Ci, bitset<1> *Di);						//формирование блоков C_0 и D_0
-bitset<1> *CyclicShift(bitset<1> Bitset, const int ShiftNumber, const int BitsetSize = 28 );			//функция циклических сдвигов влево
+bitset<1> *LeftCyclicShift(bitset<1> *Bitset, const size_t ShiftNumber, const int BitsetSize = 28 );			//функция циклических сдвигов влево
 bitset<8> *FinalPermutation8(bitset<8> * FittedBitsetArray8);			//функция конечной перестановки для 64 бит
 bitset<8> *FinalPermutation(bitset<8> * BitsetArray, const int ArraySize);		//функция конечной перестановки для всех блоков
 
