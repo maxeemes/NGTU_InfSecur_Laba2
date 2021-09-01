@@ -70,6 +70,16 @@ int PermutaionTable[4][8] = {
 	{19,	13,	30,	6,	22,	11,	4,	25}
 };
 
+int KeyPermutationCTable[28] = {
+	57,	49,	41,	33,	25,	17,	9,	1,	58,	50,	42,	34,	26,	18,	//C_0
+	10,	2,	59,	51,	43,	35,	27,	19,	11,	3,	60,	52,	44,	36
+};
+
+int KeyPermutationDTable[28] = {
+	63,	55,	47,	39,	31,	23,	15,	7,	62,	54,	46,	38,	30,	22,	//D_0
+	14,	6,	61,	53,	45,	37,	29,	21,	13,	5,	28,	20,	12,	4
+};
+
 bitset<8>* FitArray(bitset<8>* BitsetArray, int * ArraySize)
 {
 	if(*ArraySize <= 0) return nullptr;
@@ -128,7 +138,7 @@ bitset<8>* InitialPermutation(bitset<8>* BitsetArray, const int ArraySize)
 	return PermutatedBitsetArray;
 }
 
-bitset<8>* BitsetXor(bitset<8>* LBitset, bitset<8>* FBitset, int BisetArraySize = 4)
+bitset<8>* BitsetXor(bitset<8>* LBitset, bitset<8>* FBitset, int BisetArraySize)
 {
 	bitset <8> *ResBitset = new bitset<8>[BisetArraySize];
 	for (int i = 0; i < BisetArraySize; i++)
@@ -186,5 +196,43 @@ bitset<8>* Permutation(bitset<8>* SBitset)
 		}
 	}
 	return PemutatedVal;
+}
+
+bitset<8>* KeyAddParityBits(bitset<8>* K)
+{
+	bitset<8> *KeyWithParityBits = new bitset<8>[8];
+	for (int ByteInd = 0; ByteInd < 8; ByteInd++)
+	{
+		bitset<1> ParityBit = true;
+		for (int BitInd = 0, KBitNum = ByteInd * 7; BitInd < 7; BitInd++, KBitNum++)
+		{
+			KeyWithParityBits[ByteInd][BitInd] = K[KBitNum / 8][KBitNum % 8];
+			if (KeyWithParityBits[ByteInd][BitInd])
+			{
+				ParityBit.flip();
+			}
+		}
+		KeyWithParityBits[ByteInd][7] = ParityBit[0];
+	}
+	return KeyWithParityBits;
+}
+
+bool KeyGetCD(bitset<8>* Kp, bitset<1>* Ci, bitset<1>* Di)
+{
+	for (int BitInd = 0; BitInd < 28; BitInd++)
+	{
+		int NewKpCiBitNum = KeyPermutationCTable[BitInd] - 1;
+		Ci[BitInd][0] = Kp[NewKpCiBitNum / 8][NewKpCiBitNum % 8];
+		int NewKpDiBitNum = KeyPermutationDTable[BitInd] - 1;
+		Di[BitInd][0] = Kp[NewKpDiBitNum / 8][NewKpDiBitNum % 8];
+	}
+	return true;
+}
+
+bitset<1>* CyclicShift(bitset<1> Bitset, const int ShiftNumber, const int BitsetSize)
+{
+	//bitset<1> *ShiftedBitset
+	//for()
+	return nullptr;
 }
 
