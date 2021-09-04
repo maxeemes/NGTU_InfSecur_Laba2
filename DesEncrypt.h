@@ -5,6 +5,7 @@
 #include <Windows.h>
 
 using namespace std;
+//TODO: сделать очистку памяти 
 
 bitset<8> *FitArray(bitset<8> * BitsetArray, int * ArraySize);				//функция добавления битов для получения блоков по 64 бита
 bitset<8> *InitialPermutation8(bitset<8> * const FittedBitsetArray8);		//функция начальной перестановки для 64 бит

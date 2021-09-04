@@ -80,6 +80,13 @@ int KeyPermutationDTable[28] = {
 	14,	6,	61,	53,	45,	37,	29,	21,	13,	5,	28,	20,	12,	4
 };
 
+int FinalPermutaionTable[8][8] = {
+	{40,	8,	48,	16,	56,	24,	64,	32},	{39,	7,	47,	15,	55,	23,	63,	31},
+	{38,	6,	46,	14,	54,	22,	62,	30},	{37,	5,	45,	13,	53,	21,	61,	29},
+	{36,	4,	44,	12,	52,	20,	60,	28},	{35,	3,	43,	11,	51,	19,	59,	27},
+	{34,	2,	42,	10,	50,	18,	58,	26},	{33,	1,	41,	9,	49,	17,	57,	25}
+};
+
 bitset<8>* FitArray(bitset<8>* BitsetArray, int * ArraySize)
 {
 	if(*ArraySize <= 0) return nullptr;
@@ -133,6 +140,7 @@ bitset<8>* InitialPermutation(bitset<8>* BitsetArray, const int ArraySize)
 		{
 			PermutatedBitsetArray[i + ByteNum] = TempBitsetArray[ByteNum];
 		}
+		delete[] TempBitsetArray;
 	}
 
 	return PermutatedBitsetArray;
@@ -238,5 +246,37 @@ bitset<1>* LeftCyclicShift(bitset<1> *Bitset, const size_t ShiftNumber, const in
 	}
 	rotate(&ShiftedBitset[0], &ShiftedBitset[0] + ShiftNumber, &ShiftedBitset[BitsetSize]);
 	return ShiftedBitset;
+}
+
+bitset<8>* FinalPermutation8(bitset<8>* FittedBitsetArray8)
+{
+	bitset<8> * FinalPermutation8Res = new bitset<8>[8];	//масив для результата
+	for (int ByteInd = 0; ByteInd < 8; ByteInd++)			//цикл перестановки
+	{
+		for (int BitInd = 0; BitInd < 8; BitInd++)
+		{
+			int NewBitNum = FinalPermutaionTable[ByteInd][BitInd] - 1;
+			FinalPermutation8Res[ByteInd][BitInd] = FittedBitsetArray8[NewBitNum / 8][NewBitNum % 8];
+		}
+	}
+	return FinalPermutation8Res;
+}
+
+bitset<8>* FinalPermutation(bitset<8>* BitsetArray, const int ArraySize)
+{
+	if (ArraySize > 0 && ArraySize % 8 != 0) return nullptr;
+	bitset<8>* PermutatedBitsetArray = new bitset<8>[ArraySize];
+	bitset<8>* TempBitsetArray;
+
+	for (int i = 0; i < ArraySize; i += 8)						//цикл блочной перестановки по 8 байт
+	{
+		TempBitsetArray = FinalPermutation8(&BitsetArray[i]);
+		for (int ByteNum = 0; ByteNum < 8; ByteNum++)
+		{
+			PermutatedBitsetArray[i + ByteNum] = TempBitsetArray[ByteNum];
+		}
+		delete[] TempBitsetArray;
+	}
+	return PermutatedBitsetArray;
 }
 
