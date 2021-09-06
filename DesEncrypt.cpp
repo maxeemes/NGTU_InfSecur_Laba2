@@ -87,6 +87,14 @@ int FinalPermutaionTable[8][8] = {
 	{34,	2,	42,	10,	50,	18,	58,	26},	{33,	1,	41,	9,	49,	17,	57,	25}
 };
 
+int KeyCDPermutationTable[6][8] = {
+	{14,	17,	11,	24,	1,	5,	3,	28},	{15,	6,	21,	10,	23,	19,	12,	4 },
+	{26,	8,	16,	7,	27,	20,	13,	2},		{41,	52,	31,	37,	47,	55,	30,	40},
+	{51,	45,	33,	48,	44,	49,	39,	56},	{34,	53,	46,	42,	50,	36,	29,	32}
+};
+
+int CiDiShiftSize[16] = { 1,	1,	2,	2,	2,	2,	2,	2,	1,	2,	2,	2,	2,	2,	2,	1 };
+
 bitset<8>* FitArray(bitset<8>* BitsetArray, int * ArraySize)
 {
 	if(*ArraySize <= 0) return nullptr;
@@ -206,6 +214,37 @@ bitset<8>* Permutation(bitset<8>* SBitset)
 	return PemutatedVal;
 }
 
+bitset<8>* KeysGenerationK(bitset<8>* K)
+{
+	bitset<8> *GeneratedKeys = new bitset<8>[96];
+	bitset<8> *KWithParityBits = KeyAddParityBits(K);
+	bitset<1> *Ci, *Di;
+	if (!KeyGetCD(KWithParityBits, Ci, Di))
+	{
+		delete[] GeneratedKeys;
+		delete[] KWithParityBits;
+		return nullptr;
+	}
+	delete[] KWithParityBits;
+
+	for (int KiInd = 0, ShiftSize = 0; KiInd < 16; KiInd++)
+	{
+		ShiftSize += CiDiShiftSize[KiInd];
+		bitset<1> *NewCi = LeftCyclicShift(Ci, ShiftSize);
+		bitset<1> *NewDi = LeftCyclicShift(Di, ShiftSize);
+		bitset<8> *NewKi = KeyCDPermutation(NewCi, NewDi);
+		for (int KeyByteInd = KiInd * 6, KiByteInd = 0; KeyByteInd < ((KiInd + 1) * 6) && KiByteInd < 6; KeyByteInd++, KiByteInd++)
+		{
+			GeneratedKeys[KeyByteInd] = NewKi[KiByteInd];
+		}
+		delete[] NewCi;
+		delete[] NewDi;
+		delete[] NewKi;
+	}
+
+	return GeneratedKeys;
+}
+
 bitset<8>* KeyAddParityBits(bitset<8>* K)
 {
 	bitset<8> *KeyWithParityBits = new bitset<8>[8];
@@ -246,6 +285,34 @@ bitset<1>* LeftCyclicShift(bitset<1> *Bitset, const size_t ShiftNumber, const in
 	}
 	rotate(&ShiftedBitset[0], &ShiftedBitset[0] + ShiftNumber, &ShiftedBitset[BitsetSize]);
 	return ShiftedBitset;
+}
+
+bitset<8>* KeyCDPermutation(bitset<1>* Ci, bitset<1>* Di)
+{
+	const int KeyCDPermutatedByteSize = 6;
+	bitset<8> *KeyCDPermutated = new bitset<8>[KeyCDPermutatedByteSize];
+	for (int ByteInd = 0; ByteInd < KeyCDPermutatedByteSize; ByteInd++)
+	{
+		for (int BitInd = 0; BitInd < 8; BitInd++)
+		{
+			int NewBitPos = KeyCDPermutationTable[ByteInd][BitInd] - 1;
+			if (KeyCDPermutationTable[ByteInd][BitInd] >= 0 && KeyCDPermutationTable[ByteInd][BitInd] < 28)
+			{
+				KeyCDPermutated[ByteInd][BitInd] = Ci[NewBitPos][0];
+			}
+			else if (KeyCDPermutationTable[ByteInd][BitInd] >= 28 && KeyCDPermutationTable[ByteInd][BitInd] < 56)
+			{
+				NewBitPos -= 28;
+				KeyCDPermutated[ByteInd][BitInd] = Di[NewBitPos][0];
+			}
+			else
+			{
+				delete[] KeyCDPermutated;
+				break;
+			}
+		}
+	}
+	return KeyCDPermutated;
 }
 
 bitset<8>* FinalPermutation8(bitset<8>* FittedBitsetArray8)

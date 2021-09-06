@@ -25,10 +25,13 @@ bitset<8> *ExtensionE(bitset<8> *RBitset);							//функция расширения 32-битовог
 bitset<4> *TransormationS(bitset<6> *EkBitset);						//преобразование S, состоящее из 8 преобразований S -блоков S_1, S_2, S_3... S_8,
 bitset<8> *Permutation(bitset<8> *SBitset);							//перестановка  P.
 
-bitset<8> *KeysGenerationK(bitset<8> *K);									//Генерирование ключей k_i, входные данные битовый ключ из 7 байт
+bitset<8> *KeysGenerationK(bitset<8> *K);									//Генерирование ключей k_i, входные данные битовый ключ из 7 байт, возвращает массив 16 ключей по 6 байт
 bitset<8> *KeyAddParityBits(bitset<8> *K);										//добавление к 56 битовому ключу битов таким образом, чтобы каждый байт содержал нечетное число единиц.
 bool KeyGetCD(bitset<8> *Kp, bitset<1> *Ci, bitset<1> *Di);						//формирование блоков C_0 и D_0
 bitset<1> *LeftCyclicShift(bitset<1> *Bitset, const size_t ShiftNumber, const int BitsetSize = 28 );			//функция циклических сдвигов влево
+bitset<8> *KeyCDPermutation(bitset<1> *Ci, bitset<1> *Di);
+
+
 bitset<8> *FinalPermutation8(bitset<8> * FittedBitsetArray8);			//функция конечной перестановки для 64 бит
 bitset<8> *FinalPermutation(bitset<8> * BitsetArray, const int ArraySize);		//функция конечной перестановки для всех блоков
 
