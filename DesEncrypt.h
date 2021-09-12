@@ -7,15 +7,17 @@
 using namespace std;
 //TODO: сделать очистку памяти 
 
-bitset<8> *FitArray(bitset<8> * BitsetArray, size_t * ArraySize);				//функция добавления битов для получения блоков по 64 бита
+bitset<8> *FitArray(bitset<8> * BitsetArray, size_t * ArraySize, const size_t BlockSize = 8);				//функция добавления битов для получения блоков по 64 бита
 bitset<6> *Bitset8ToBiset6Array(bitset<8> * BitsetArray, size_t * ArraySize);
 bitset<8> *Bitset4ToBiset8Array(bitset<4> * BitsetArray, size_t * ArraySize);
+bool BrakeBitsetBlock(bitset<8> * BitsetArray, bitset<8> *L, bitset<8> *R);							//разбивка блока 64 бита на блоки по 32
+
 bitset<8> *InitialPermutation8(bitset<8> * const FittedBitsetArray8);		//функция начальной перестановки для 64 бит
 bitset<8> *InitialPermutation(bitset<8> * BitsetArray, const int ArraySize);	//функция начальной перестановки для всех блоков
 
 
 
-bitset<8> *DesEncrypt();								//функция шифрования
+bitset<8> *DesEncrypt(bitset<8> * BitsetArray, size_t *ArraySize, bitset<8> *Key);					//функция шифрования, в качестве входных данных принимает массив битов любой длинны и ключ 7 байт
 bitset<8> *BitsetXor(bitset<8> *LBitset, bitset<8> *FBitset, int BisetArraySize = 4);	//функция битового сложения блоков по 32 бита по модулю 2
 bitset<8> *Feistel(bitset<8> *RBitset, bitset<8> *NKey);		//Основная функция шифрования (функция Фейстеля)
 		/*
