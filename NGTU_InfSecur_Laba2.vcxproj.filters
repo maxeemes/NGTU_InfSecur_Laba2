@@ -13,13 +13,16 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="DesEncrypt">
+      <UniqueIdentifier>{da37072c-6397-460b-a251-f3fd90cdfe0b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NGTU_InfSecur_Laba2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DesEncrypt.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>DesEncrypt</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -27,7 +30,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DesEncrypt.h">
-      <Filter>Source Files</Filter>
+      <Filter>DesEncrypt</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
