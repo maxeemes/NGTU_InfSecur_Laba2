@@ -189,6 +189,14 @@ bool BrakeBitsetBlock(bitset<8>* BitsetArray, bitset<8>* L, bitset<8>* R)
 }
 
 bitset<8>* UniteBiset8Array(bitset<8>* BitsetArray1, const size_t Array1Size, bitset<8>* BitsetArray2, const size_t Array2Size)
+{
+	if(BitsetArray1 == nullptr || BitsetArray2 == nullptr || Array1Size <= 0 || Array2Size <= 0) return nullptr;
+	bitset<8> *C = new bitset<8>[Array1Size + Array2Size];
+	bitset<8> *ResUnitedBiset8Array = copy(BitsetArray1, BitsetArray1 + Array1Size, C);
+	copy(BitsetArray2, BitsetArray2 + Array2Size, ResUnitedBiset8Array);
+	return ResUnitedBiset8Array;
+}
+
 bitset<8>* InitialPermutation8(bitset<8>* const FittedBitsetArray8)
 {
 	bitset<8> * InitialPermutaion8Res = new bitset<8>[8];	//����� ��� ����������
