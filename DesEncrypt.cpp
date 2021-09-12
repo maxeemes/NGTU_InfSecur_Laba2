@@ -224,7 +224,7 @@ bitset<8>* InitialPermutation(bitset<8>* BitsetArray, const int ArraySize)
 
 	for (int i = 0; i < ArraySize; i += 8)						//цикл блочного шифрования по 8 байт
 	{
-		TempBitsetArray = InitialPermutation8(&BitsetArray[i]);	//проверить работоспособность
+		TempBitsetArray = InitialPermutation8((BitsetArray + i));	//проверить работоспособность
 		for (int ByteNum = 0; ByteNum < 8; ByteNum++)
 		{
 			PermutatedBitsetArray[i + ByteNum] = TempBitsetArray[ByteNum];
@@ -244,20 +244,23 @@ bitset<8>* DesEncrypt(bitset<8>* BitsetArray, size_t *ArraySize, bitset<8> *Key)
 	//генерация ключей
 	bitset<8> *Keys = KeysGenerationK(Key);
 
-	bitset<8> *ResDesEncrited;
+	bitset<8> *ResDesEncrited = new bitset<8>[8];
+	bitset<8> *L = nullptr, *R = nullptr;
 	//основной цикл шифрования массива блоков
-	for (int BlockInd = 0, StartByteInd = 0, 
-		bitset<8> *L, *R; BlockInd < (FittedArraySize / 8); 
+	for (int StartByteInd = 0, BlockInd = 0; 
+		BlockInd < (FittedArraySize / 8); 
 		BlockInd++, StartByteInd *= BlockInd)
 	{
-		bitset<8> *InitPermutated = InitialPermutation8(&FittedArray[StartByteInd]);
+		bitset<8> *InitPermutated = InitialPermutation8((FittedArray + StartByteInd));
 		if(BrakeBitsetBlock(InitPermutated, L, R) == false) return nullptr;
 		delete[] InitPermutated;
 		//основной цикл шифрования блоков
-		for (int Iter = 0, bitset<8> *TempBitset; Iter < 16; Iter++)
+		bitset<8> *TempBitset;
+		for (int Iter = 0; Iter < 16; Iter++)
 		{
 			TempBitset = R;
-			bitset<8> *F = Feistel(R, &Keys[Iter * 16]);
+			bitset<8> *NKey = Keys + Iter * 16;
+			bitset<8> *F = Feistel(R, NKey);
 			R = BitsetXor(L, F);
 			delete[] L;
 			delete[] F;
@@ -282,7 +285,7 @@ bitset<8>* DesEncrypt(bitset<8>* BitsetArray, size_t *ArraySize, bitset<8> *Key)
 
 bitset<8>* BitsetXor(bitset<8>* LBitset, bitset<8>* FBitset, int BisetArraySize)
 {
-	bitset <8> *ResBitset = new bitset<8>[BisetArraySize];
+	bitset<8> *ResBitset = new bitset<8>[BisetArraySize];
 	for (int i = 0; i < BisetArraySize; i++)
 	{
 		ResBitset[i] = LBitset[i] ^ FBitset[i];
@@ -362,7 +365,7 @@ bitset<8>* KeysGenerationK(bitset<8>* K)
 {
 	bitset<8> *GeneratedKeys = new bitset<8>[96];
 	bitset<8> *KWithParityBits = KeyAddParityBits(K);
-	bitset<1> *Ci, *Di;
+	bitset<1> *Ci = nullptr, *Di = nullptr;
 	if (!KeyGetCD(KWithParityBits, Ci, Di))
 	{
 		delete[] GeneratedKeys;
@@ -431,7 +434,7 @@ bitset<1>* LeftCyclicShift(bitset<1> *Bitset, const size_t ShiftNumber, const in
 	{
 		ShiftedBitset[BitInd] = Bitset[BitInd];
 	}
-	rotate(&ShiftedBitset[0], &ShiftedBitset[0] + ShiftNumber, &ShiftedBitset[BitsetSize]);
+	rotate(ShiftedBitset, ShiftedBitset + ShiftNumber, (ShiftedBitset + BitsetSize));
 	return ShiftedBitset;
 }
 
@@ -485,7 +488,7 @@ bitset<8>* FinalPermutation(bitset<8>* BitsetArray, const int ArraySize)
 
 	for (int i = 0; i < ArraySize; i += 8)						//цикл блочной перестановки по 8 байт
 	{
-		TempBitsetArray = FinalPermutation8(&BitsetArray[i]);
+		TempBitsetArray = FinalPermutation8((BitsetArray + i));
 		for (int ByteNum = 0; ByteNum < 8; ByteNum++)
 		{
 			PermutatedBitsetArray[i + ByteNum] = TempBitsetArray[ByteNum];

@@ -18,11 +18,11 @@ int main()
 {
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
-
+	/*
 	string myString = "9";
 	bitset<8> * testBitset = StringToBitset8Array(myString);
 
-
+	
 	for (int i = 0; i < myString.size(); ++i)
 	{
 		cout << testBitset[i] << endl;
@@ -56,7 +56,7 @@ int main()
 		cout << i << ")\t" << Permuted[i] << endl;
 	}
 	cout << Bitset8ArrayToString(Permuted, NewSize) << endl;
-
+	*/
 	return 0;
 }
 
