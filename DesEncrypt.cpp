@@ -251,7 +251,6 @@ bitset<8>* DesEncrypt(bitset<8>* BitsetArray, size_t *ArraySize, bitset<8> *Key)
 		BlockInd++, StartByteInd *= BlockInd)
 	{
 		bitset<8> *InitPermutated = InitialPermutation8(&FittedArray[StartByteInd]);
-		delete[] FittedArray;
 		if(BrakeBitsetBlock(InitPermutated, L, R) == false) return nullptr;
 		delete[] InitPermutated;
 		//основной цикл шифрования блоков
@@ -268,6 +267,7 @@ bitset<8>* DesEncrypt(bitset<8>* BitsetArray, size_t *ArraySize, bitset<8> *Key)
 		delete[] L;
 		delete[] R;
 		bitset<8> *FinalPermutated = FinalPermutation8(UnitedLR);
+		delete[] UnitedLR;
 		for (int ByteInd = 0, EncriptedByteInd = StartByteInd; ByteInd < 8; ByteInd++, EncriptedByteInd)
 		{
 			ResDesEncrited[EncriptedByteInd] = FinalPermutated[ByteInd];
@@ -275,6 +275,7 @@ bitset<8>* DesEncrypt(bitset<8>* BitsetArray, size_t *ArraySize, bitset<8> *Key)
 		delete[] FinalPermutated;
 	}
 
+	delete[] FittedArray;
 	delete[] Keys;
 	return ResDesEncrited;
 }
@@ -366,6 +367,8 @@ bitset<8>* KeysGenerationK(bitset<8>* K)
 	{
 		delete[] GeneratedKeys;
 		delete[] KWithParityBits;
+		delete[] Ci;
+		delete[] Di;
 		return nullptr;
 	}
 	delete[] KWithParityBits;
@@ -384,7 +387,8 @@ bitset<8>* KeysGenerationK(bitset<8>* K)
 		delete[] NewDi;
 		delete[] NewKi;
 	}
-
+	delete[] Ci;
+	delete[] Di;
 	return GeneratedKeys;
 }
 
@@ -409,6 +413,7 @@ bitset<8>* KeyAddParityBits(bitset<8>* K)
 
 bool KeyGetCD(bitset<8>* Kp, bitset<1>* Ci, bitset<1>* Di)
 {
+	Ci = new bitset<1>[28], Di = new bitset<1>[28];
 	for (int BitInd = 0; BitInd < 28; BitInd++)
 	{
 		int NewKpCiBitNum = KeyPermutationCTable[BitInd] - 1;

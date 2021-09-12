@@ -5,7 +5,6 @@
 #include <Windows.h>
 
 using namespace std;
-//TODO: сделать очистку памяти 
 
 bitset<8> *FitArray(bitset<8> * BitsetArray, size_t * ArraySize, const size_t BlockSize = 8);				//функция добавления битов для получения блоков по 64 бита
 bitset<6> *Bitset8ToBiset6Array(bitset<8> * BitsetArray, size_t * ArraySize);
@@ -16,7 +15,6 @@ bitset<8> *UniteBiset8Array(bitset<8> * BitsetArray1, const size_t Array1Size, b
 
 bitset<8> *InitialPermutation8(bitset<8> * const FittedBitsetArray8);		//функция начальной перестановки для 64 бит
 bitset<8> *InitialPermutation(bitset<8> * BitsetArray, const int ArraySize);	//функция начальной перестановки для всех блоков
-
 
 
 bitset<8> *DesEncrypt(bitset<8> * BitsetArray, size_t *ArraySize, bitset<8> *Key);					//функция шифрования, в качестве входных данных принимает массив битов любой длинны и ключ 7 байт
