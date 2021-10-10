@@ -170,15 +170,15 @@ bitset<8>* Bitset4ToBiset8Array(bitset<4>* BitsetArray, size_t * ArraySize)
 
 bool BrakeBitsetBlock(bitset<8>* BitsetArray, bitset<8>* L, bitset<8>* R)
 {
-	if (BitsetArray == nullptr)
+	if (BitsetArray == nullptr || L == nullptr || R == nullptr)
 	{
 		return false;
 	}
 
-	if (L != nullptr) delete[] L;//очистка старых значений
-	if (R != nullptr) delete[] R;
-	L = new bitset<8>[4];
-	R = new bitset<8>[4];
+	//if (L != nullptr) delete[] L;//очистка старых значений
+	//if (R != nullptr) delete[] R;
+	//L = new bitset<8>[4];
+	//R = new bitset<8>[4];
 
 	for (int LByteInd = 0, RByteInd = 4; LByteInd < 4 && RByteInd < 8; LByteInd++, RByteInd++)
 	{
@@ -238,20 +238,21 @@ bitset<8>* InitialPermutation(bitset<8>* BitsetArray, const int ArraySize)
 bitset<8>* DesEncrypt(bitset<8>* BitsetArray, size_t *ArraySize, bitset<8> *Key)
 {
 	//получение массива байт кратного 8
-	size_t FittedArraySize = *ArraySize;
-	bitset<8> *FittedArray = FitArray(BitsetArray, &FittedArraySize);
+	size_t *FittedArraySize = ArraySize;
+	bitset<8> *FittedArray = FitArray(BitsetArray, FittedArraySize);
 
 	//генерация ключей
 	bitset<8> *Keys = KeysGenerationK(Key);
 
 	bitset<8> *ResDesEncrited = new bitset<8>[8];
-	bitset<8> *L = nullptr, *R = nullptr;
 	//основной цикл шифрования массива блоков
 	for (int StartByteInd = 0, BlockInd = 0; 
-		BlockInd < (FittedArraySize / 8); 
-		BlockInd++, StartByteInd *= BlockInd)
+		BlockInd < (*FittedArraySize / 8); 
+		BlockInd++)
 	{
+		StartByteInd = BlockInd * 8;
 		bitset<8> *InitPermutated = InitialPermutation8((FittedArray + StartByteInd));
+		bitset<8> *L = new bitset<8>[4], *R = new bitset<8>[4];
 		if(BrakeBitsetBlock(InitPermutated, L, R) == false) return nullptr;
 		delete[] InitPermutated;
 		//основной цикл шифрования блоков
@@ -270,7 +271,7 @@ bitset<8>* DesEncrypt(bitset<8>* BitsetArray, size_t *ArraySize, bitset<8> *Key)
 		delete[] L;
 		delete[] R;
 		bitset<8> *FinalPermutated = FinalPermutation8(UnitedLR);
-		delete[] UnitedLR;
+		//delete[] UnitedLR;
 		for (int ByteInd = 0, EncriptedByteInd = StartByteInd; ByteInd < 8; ByteInd++, EncriptedByteInd)
 		{
 			ResDesEncrited[EncriptedByteInd] = FinalPermutated[ByteInd];
@@ -365,7 +366,7 @@ bitset<8>* KeysGenerationK(bitset<8>* K)
 {
 	bitset<8> *GeneratedKeys = new bitset<8>[96];
 	bitset<8> *KWithParityBits = KeyAddParityBits(K);
-	bitset<1> *Ci = nullptr, *Di = nullptr;
+	bitset<1> *Ci = new bitset<1>[28], *Di = new bitset<1>[28];
 	if (!KeyGetCD(KWithParityBits, Ci, Di))
 	{
 		delete[] GeneratedKeys;
@@ -416,7 +417,7 @@ bitset<8>* KeyAddParityBits(bitset<8>* K)
 
 bool KeyGetCD(bitset<8>* Kp, bitset<1>* Ci, bitset<1>* Di)
 {
-	Ci = new bitset<1>[28], Di = new bitset<1>[28];
+	//Ci = new bitset<1>[28], Di = new bitset<1>[28];
 	for (int BitInd = 0; BitInd < 28; BitInd++)
 	{
 		int NewKpCiBitNum = KeyPermutationCTable[BitInd] - 1;
@@ -447,11 +448,11 @@ bitset<8>* KeyCDPermutation(bitset<1>* Ci, bitset<1>* Di)
 		for (int BitInd = 0; BitInd < 8; BitInd++)
 		{
 			int NewBitPos = KeyCDPermutationTable[ByteInd][BitInd] - 1;
-			if (KeyCDPermutationTable[ByteInd][BitInd] >= 0 && KeyCDPermutationTable[ByteInd][BitInd] < 28)
+			if (NewBitPos >= 0 && NewBitPos < 28)
 			{
 				KeyCDPermutated[ByteInd][BitInd] = Ci[NewBitPos][0];
 			}
-			else if (KeyCDPermutationTable[ByteInd][BitInd] >= 28 && KeyCDPermutationTable[ByteInd][BitInd] < 56)
+			else if (NewBitPos >= 28 && NewBitPos < 56)
 			{
 				NewBitPos -= 28;
 				KeyCDPermutated[ByteInd][BitInd] = Di[NewBitPos][0];

@@ -12,51 +12,60 @@ int ReadConsoleNum(const string Text = "", const int Color = 7);
 
 bitset<8> *StringToBitset8Array(const string Text);//функция преобразования в массив битов
 string Bitset8ArrayToString(bitset<8> *BiitsetArray, const int ArraySize);//функция преобразования из массива битов в текст
+string Bitset8ArrayToIntString(bitset<8>* BiitsetArray, int ArraySize);//функция преобразования из массива битов в текст из цифр
+string FitKey(const string Key);//функция расширения ключа
+
 //функции интерефейса для шифрования
 
 int main()
 {
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
-	/*
-	string myString = "9";
-	bitset<8> * testBitset = StringToBitset8Array(myString);
 
-	
-	for (int i = 0; i < myString.size(); ++i)
-	{
-		cout << testBitset[i] << endl;
-	}
-	cout << Bitset8ArrayToString(testBitset, myString.length()) << endl;
+	bool IsExit = false;
+	string Message, Key;
 
-	int NewSize = myString.size();
-	testBitset = FitArray(testBitset, &NewSize);
-	for (int i = 0; i < NewSize; ++i)
-	{
-		cout << i * 8 << " - \t" << testBitset[i] << endl;
-		//for (int Bit = 0; Bit < 8; Bit++)
-		//{
-		//	cout << testBitset[i][Bit];
-		//}
-		//cout << endl;
-	}
-	cout << Bitset8ArrayToString(testBitset, NewSize) << endl;
+	//консольное меню программы
+	do {
+		AddConsoleTextColor("Шифрование сообщений алгоритмом DES", 224);
+		switch (ReadConsoleNum("Для шифрования сообщения введите 1, для выхода 2...", 14))
+		{
+		case 1: //меню шифра сообщения
+		{
+			AddConsoleTextColor("Введите сообщение...", 14);
+			//cin >> Message;
+			getchar();
+			getline(cin, Message);
+			AddConsoleTextColor("Ключ для шифра, не больше 7 символов...", 14);
+			//cin >> Key;
+			getline(cin, Key);
+			if (Key.length() <= 7)
+			{
+				//расширение ключа до 7 символов
+				Key = FitKey(Key);
+				bitset<8> *BitMessage = StringToBitset8Array(Message);
+				bitset<8> *BitKey = StringToBitset8Array(Key);
+				size_t SizeMessage = Message.size();
+				bitset<8> *EncryptedMessage = DesEncrypt(BitMessage, &SizeMessage, BitKey);
+				string ResEncryptedMessage = Bitset8ArrayToIntString(EncryptedMessage, SizeMessage);
+				AddConsoleTextColor("Результат: [" + ResEncryptedMessage + "]", 14);
+			}
+			else
+			{
+				AddConsoleTextColor("Введен некорретный ключ! Ключ должен не быть пустым и должен состоять только из символов русского алфавита без буквы ""Ё"" и пробелов!", 12);
+			}
+			break;
+		}
+		case 2: //выход из программы
+		{
+			IsExit = true;
+			break;
+		}
+		default:
+			break;
+		}
+	} while (IsExit == false);
 
-	bitset<8> * Permuted = InitialPermutation8(testBitset);
-	cout << "до" << endl;
-	for (int i = 0; i < NewSize; i++)
-	{
-		cout << i << ")\t" << Permuted[i] << endl;
-	}
-	//rotate(&Permuted[0], &Permuted[0] + 1, &Permuted[8]);
-	Permuted = InitialPermutation(testBitset, NewSize);
-	cout << "после" << endl;
-	for (int i = 0; i < NewSize; i++)
-	{
-		cout << i << ")\t" << Permuted[i] << endl;
-	}
-	cout << Bitset8ArrayToString(Permuted, NewSize) << endl;
-	*/
 	return 0;
 }
 
@@ -107,7 +116,46 @@ string Bitset8ArrayToString(bitset<8>* BiitsetArray, int ArraySize)
 	string ResString;
 	for (int i = 0; i < ArraySize; i++)
 	{
-		ResString += (char)BiitsetArray[i].to_ulong();
+		char NewLetter = (char)BiitsetArray[i].to_ulong();
+		ResString += NewLetter;
 	}
 	return ResString;
+}
+
+string Bitset8ArrayToIntString(bitset<8>* BiitsetArray, int ArraySize)
+{
+	if (ArraySize <= 0) return string();
+	string ResString = to_string(BiitsetArray[0].to_ulong());
+	for (int i = 0; i < ArraySize; i++)
+	{
+		ResString += ' ' + to_string(BiitsetArray[i].to_ulong());
+	}
+	return ResString;
+}
+
+
+string FitKey(const string Key)
+{
+	int InKeyLength = Key.length();
+	string ResKey = "";
+	if (InKeyLength < 7)
+	{
+		for (int si = 0; si < 7; si++)
+		{
+			if (si < InKeyLength)
+			{
+				ResKey += Key[si];
+			}
+			else
+			{
+				ResKey += (char)0;
+			}
+		}
+	}
+	else
+	{
+		return string();
+	}
+
+	return ResKey;
 }
